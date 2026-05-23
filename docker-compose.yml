@@ -141,6 +141,44 @@ services:
     depends_on:
       - api-gateway
 
+  # Prometheus
+  prometheus:
+    image: quay.io/prometheus/prometheus:v2.45.0
+    container_name: prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./devops/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - fruits-network
+    depends_on:
+      - api-gateway
+      - auth-service
+      - product-service
+      - order-service
+      - payment-service
+      - notification-service
+
+  # Grafana
+  grafana:
+    image: public.ecr.aws/ubuntu/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "3100:3000"
+    volumes:
+      - ./devops/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./devops/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./devops/grafana/dashboards:/var/lib/grafana/dashboards
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    networks:
+      - fruits-network
+    depends_on:
+      - prometheus
+
 volumes:
   mongo_data:
 
