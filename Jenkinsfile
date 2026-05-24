@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     environment {
-        DOCKER_REGISTRY = 'your-docker-registry'
+        DOCKER_REGISTRY = 'harsha160924/'
         PROJECT_NAME = 'fruits-delivery'
         VERSION = "${BUILD_NUMBER}"
     }
